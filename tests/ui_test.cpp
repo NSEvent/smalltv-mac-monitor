@@ -75,11 +75,20 @@ int main() {
     before=writes; uiDraw(&c,&r,LINK_LIVE); assert(writes==before);
     uiDraw(&c,&r,LINK_STALE); uiDraw(&c,&r,LINK_WAIT); uiDraw(&c,&r,LINK_SETUP);
     uiDraw(&c,&r,LINK_LIVE); assert(fullClears==0); // fields stream in place; no full-screen clear
+    // Celsius setting: only the temperature text changes; squares keep their colors.
+    static uint16_t fahrenheit[240 * 240];
+    memcpy(fahrenheit, screen, sizeof screen);
+    uint16_t hot=at(214,58);
+    c.celsius=1; before=writes; uiDraw(&c,&r,LINK_LIVE);
+    assert(writes==before+2); // CPU and GPU temperature fields
+    assert(memcmp(fahrenheit, screen, sizeof screen)!=0);
+    assert(at(214,58)==hot && at(214,142)==cool);
+    before=writes; uiDraw(&c,&r,LINK_LIVE); assert(writes==before);
     FILE *file=fopen("/tmp/smalltv-temp-squares.ppm","wb"); assert(file);
     fprintf(file,"P6\n240 240\n255\n");
     for(uint16_t p:screen) { unsigned char rgb[]={(unsigned char)(((p>>11)&31)*255/31),
         (unsigned char)(((p>>5)&63)*255/63),(unsigned char)((p&31)*255/31)};
         fwrite(rgb,1,3,file); }
     fclose(file);
-    puts("Temperature-squares UI bounds, caching, square colors, state transitions and render passed");
+    puts("Temperature-squares UI bounds, caching, square colors, Celsius, state transitions and render passed");
 }

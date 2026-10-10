@@ -14,8 +14,8 @@ import time
 from pathlib import Path
 
 MAGIC = b"SMALLTV-MAC-CFG1"
-# magic, rev, ssid, pass, url, fallback, host, rot, bright, pad (firmware/src/config.cpp)
-LAYOUT = struct.Struct("<16sI33s65s160s160s25sBB47s")
+# magic, rev, ssid, pass, url, fallback, host, rot, bright, units, pad (firmware/src/config.cpp)
+LAYOUT = struct.Struct("<16sI33s65s160s160s25sBBB46s")
 assert LAYOUT.size == 512
 
 
@@ -80,6 +80,10 @@ def main():
     if image[0] != 0xE9:
         sys.exit("not an ESP8266 firmware image")
 
+    units = (vals.get("UNITS", "") or "F").upper()
+    if units not in ("F", "C"):
+        sys.exit("cube.conf: UNITS must be F or C")
+
     rev = int(time.time())
     slot = LAYOUT.pack(
         MAGIC,
@@ -91,6 +95,7 @@ def main():
         field(vals, "HOST", 25),
         number(vals, "ROTATION", 0, 0, 3),
         number(vals, "BRIGHTNESS", 30, 5, 100),
+        1 if units == "C" else 0,
         b"",
     )
     image[at:at + LAYOUT.size] = slot

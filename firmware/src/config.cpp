@@ -15,12 +15,13 @@ struct PatchCfg {
     char host[25];
     uint8_t rot;
     uint8_t bright;
-    uint8_t pad[47];
+    uint8_t units; // 0 = °F, 1 = °C
+    uint8_t pad[46];
 };
 static_assert(sizeof(PatchCfg) == 512, "configure-bin.py expects a 512-byte slot");
 static const PatchCfg kPatch PROGMEM __attribute__((used, aligned(4))) = {
     {'S','M','A','L','L','T','V','-','M','A','C','-','C','F','G','1'}, 0,
-    {0}, {0}, {0}, {0}, {0}, 0, 0, {0}};
+    {0}, {0}, {0}, {0}, {0}, 0, 0, 0, {0}};
 static PatchCfg gPatch;
 
 static bool loadPatch() {
@@ -43,6 +44,7 @@ static void applyPatch(Config *c) {
     if (gPatch.host[0]) strncpy(c->host, gPatch.host, sizeof c->host - 1);
     c->rot = gPatch.rot & 3;
     if (gPatch.bright) c->bright = (uint8_t)constrain(gPatch.bright, 5, 100);
+    c->celsius = gPatch.units ? 1 : 0;
 }
 
 static const char *kPath = "/mac.cfg";
@@ -82,6 +84,7 @@ static int readStored(Config *c) {
         else if (key == "rot") c->rot = (uint8_t)val.toInt() & 3;
         else if (key == "bright") c->bright = (uint8_t)constrain(val.toInt(), 5, 100);
         else if (key == "bgr") c->bgr = val.toInt() ? 1 : 0;
+        else if (key == "units") c->celsius = (val == "C" || val == "c") ? 1 : 0;
         else if (key == "rev") rev = val.toInt();
     }
     f.close();
@@ -108,8 +111,9 @@ void configLoad(Config *c) {
 void configSave(const Config *c) {
     File f = LittleFS.open(kPath, "w");
     if (!f) return;
-    f.printf("ssid=%s\npass=%s\nurl=%s\nfallback=%s\nhost=%s\nrot=%u\nbright=%u\nbgr=%u\n",
-             c->ssid, c->pass, c->url, c->fallbackUrl, c->host, c->rot, c->bright, c->bgr);
+    f.printf("ssid=%s\npass=%s\nurl=%s\nfallback=%s\nhost=%s\nrot=%u\nbright=%u\nbgr=%u\nunits=%c\n",
+             c->ssid, c->pass, c->url, c->fallbackUrl, c->host, c->rot, c->bright, c->bgr,
+             c->celsius ? 'C' : 'F');
     if (gPatch.rev) f.printf("rev=%u\n", (unsigned)gPatch.rev);
     f.close();
 }

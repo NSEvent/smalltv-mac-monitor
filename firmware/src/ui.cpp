@@ -43,6 +43,12 @@ static int cToF(float c) {
     return (int)(c * 9.0f / 5.0f + 32.0f + 0.5f);
 }
 
+// The Mac sends Celsius. Show it as-is or converted, per the cube's setting.
+static void fmtTemp(char *out, size_t n, float c, bool celsius) {
+    if (celsius) snprintf(out, n, "%dC", (int)(c + (c < 0 ? -0.5f : 0.5f)));
+    else snprintf(out, n, "%dF", cToF(c));
+}
+
 static uint16_t tempColor(float c) {
     if (c < 60.0f) return kGreen;
     if (c < 75.0f) return kYellow;
@@ -133,8 +139,8 @@ void uiDraw(const Config *c, const Reading *r, LinkState link) {
     if (link == LINK_LIVE || link == LINK_STALE) {
         if (r->hasCpu) { fmtPct(cpuP, sizeof cpuP, r->cpu); cpuBar = pctOf(r->cpu); cpuKnown = true; }
         if (r->hasGpu) { fmtPct(gpuP, sizeof gpuP, r->gpu); gpuBar = pctOf(r->gpu); gpuKnown = true; }
-        if (r->hasCpuT) snprintf(cpuC, sizeof cpuC, "%dF", cToF(r->cpuT));
-        if (r->hasGpuT) snprintf(gpuC, sizeof gpuC, "%dF", cToF(r->gpuT));
+        if (r->hasCpuT) fmtTemp(cpuC, sizeof cpuC, r->cpuT, c->celsius);
+        if (r->hasGpuT) fmtTemp(gpuC, sizeof gpuC, r->gpuT, c->celsius);
         if (r->hasMem && r->memT > 0.1f) {
             char u[8], tot[8];
             fmt1(u, sizeof u, r->memU);

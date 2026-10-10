@@ -4,6 +4,13 @@ A GeekMagic SmallTV-Ultra (240×240) as a Wi-Fi display for one Mac. The Mac run
 
 Validated on the machine this repo was built on: MacBook Pro, Mac17,6, Apple M5 Max, 128 GB. The cube's USB-C cable only supplies power. There is no serial port on the Mac.
 
+## Where to buy
+
+- GeekMagic SmallTV-Ultra: [AliExpress](https://kevin.md/go/smalltv-ultra) (about $13–25 depending on sales), or a generic-branded [Amazon listing](https://kevin.md/go/smalltv-ultra-amazon) that looks identical (unverified; make sure it says Ultra, since the Pro uses an ESP32 and won't run this firmware).
+- Optional: a short male-to-male USB-C adapter ([AliExpress](https://kevin.md/go/usb-c-adapter), [Amazon](https://kevin.md/go/usb-c-adapter-amazon)) lets the cube plug straight into a Mac Studio's front USB-C port with no cable.
+
+These are affiliate links. As an Amazon Associate I earn from qualifying purchases.
+
 ## Hardware
 
 | | |
@@ -113,7 +120,7 @@ Then patch the prebuilt image (Python 3 standard library only):
 python3 scripts/configure-bin.py cube.conf smalltv-mac-firmware.bin
 ```
 
-That writes `smalltv-<HOST>.bin`. The firmware has a fixed 512-byte settings slot in flash; the script fills it and changes nothing else, so the same prebuilt image works for everyone. Optional keys: `FALLBACK`, `ROTATION` (0–3, 90° clockwise steps), `BRIGHTNESS` (5–100, default 30).
+That writes `smalltv-<HOST>.bin`. The firmware has a fixed 512-byte settings slot in flash; the script fills it and changes nothing else, so the same prebuilt image works for everyone. Optional keys: `FALLBACK`, `ROTATION` (0–3, 90° clockwise steps), `BRIGHTNESS` (5–100, default 30), `UNITS` (`F` or `C`, default `F`).
 
 On first boot the cube joins that Wi-Fi by itself. A newly configured image replaces a cube's saved setup once; later changes on the cube's web page stick until you flash another configured image. A plain image keeps the saved setup.
 
@@ -171,9 +178,9 @@ A reserved (static DHCP) IP for the Mac makes a good fallback. It must actually
 serve macmetrics for failover to succeed. `make test` also covers failover,
 failback, both endpoints failing, and clock rollover.
 
-Live: computer name, CPU percent and °F, GPU percent and °F, memory used/total and percent, power in watts, fastest fan in RPM. Bars under CPU, GPU, and memory. The Mac still sends Celsius; the cube converts for the screen.
+Live: computer name, CPU percent and temperature, GPU percent and temperature, memory used/total and percent, power in watts, fastest fan in RPM. Bars under CPU, GPU, and memory. The Mac sends Celsius; the cube shows °F by default. Set **Temperature units** to `C` on the cube's web page (or `UNITS=C` in `cube.conf`, or `curl --data-urlencode 'units=C' http://<cube>/save`) for °C. `/api/status` reports `units`.
 
-Firmware `2026-10-10-temp-squares-7` is the temperature-squares layout: a 36×36 square to the right of each of CPU and GPU, green under 60 °C, yellow under 75, orange under 90, red at 90 and above. Bars go green under 50%, yellow under 80%, red above. An experimental history-trace layout is not part of this release.
+Firmware `2026-10-10-units-8` is the temperature-squares layout with the °F/°C setting: a 36×36 square to the right of each of CPU and GPU, green under 60 °C, yellow under 75, orange under 90, red at 90 and above. Bars go green under 50%, yellow under 80%, red above. An experimental history-trace layout is not part of this release.
 
 | Banner | Meaning |
 | --- | --- |

@@ -24,7 +24,7 @@ static uint32_t gFailSince = 0;
 static uint32_t gLastRejoin = 0;
 static uint32_t gLastOk = 0;
 static EndpointState gEndpoint;
-static const char *kFirmwareVersion = "2026-10-10-temp-squares-7";
+static const char *kFirmwareVersion = "2026-10-10-units-8";
 
 static void forgetHost() {
     gResolvedHost[0] = 0;
@@ -61,6 +61,7 @@ button{margin-top:1rem;background:#d6ff4a;color:#14160f;border:0;padding:.7rem 1
 <label>This cube's name</label><input name=host maxlength=24>
 <label>Rotation 0-3</label><input name=rot maxlength=1>
 <label>Brightness 5-100</label><input name=bright maxlength=3>
+<label>Temperature units F or C</label><input name=units maxlength=1 placeholder="F">
 <label>BGR 0 or 1</label><input name=bgr maxlength=1>
 <button type=submit>Save and reboot</button>
 </form>
@@ -263,6 +264,10 @@ static void handleSave() {
         next.bright = (uint8_t)constrain(server.arg("bright").toInt(), 5, 100);
     }
     if (server.hasArg("bgr") && server.arg("bgr").length()) next.bgr = server.arg("bgr").toInt() ? 1 : 0;
+    if (server.hasArg("units") && server.arg("units").length()) {
+        char u = server.arg("units")[0];
+        next.celsius = (u == 'C' || u == 'c') ? 1 : 0;
+    }
     configSave(&next);
     server.send(200, "text/html", "<meta http-equiv=refresh content='8;url=/'><p>Saved. Rebooting.</p>");
     delay(400);
@@ -273,12 +278,12 @@ static void handleStatus() {
     char body[832];
     snprintf(body, sizeof body,
              "{\"wifi\":%s,\"ap\":%s,\"ip\":\"%s\",\"rssi\":%d,\"url\":\"%s\",\"host\":\"%s\","
-             "\"firmware\":\"%s\",\"sample_age_ms\":%ld,\"rotation\":%u,\"brightness\":%u,\"fallback_url\":\"%s\",\"active_url\":\"%s\"}",
+             "\"firmware\":\"%s\",\"sample_age_ms\":%ld,\"rotation\":%u,\"brightness\":%u,\"units\":\"%c\",\"fallback_url\":\"%s\",\"active_url\":\"%s\"}",
              netConnected() ? "true" : "false", gAp ? "true" : "false",
              netConnected() ? WiFi.localIP().toString().c_str() : WiFi.softAPIP().toString().c_str(),
              WiFi.RSSI(), gCfg->url, gCfg->host, kFirmwareVersion,
              gLastOk ? (long)(millis() - gLastOk) : -1L,
-             (unsigned)gCfg->rot, (unsigned)gCfg->bright, gCfg->fallbackUrl,
+             (unsigned)gCfg->rot, (unsigned)gCfg->bright, gCfg->celsius ? 'C' : 'F', gCfg->fallbackUrl,
              gLastOk ? (gEndpoint.fallback ? gCfg->fallbackUrl : gCfg->url) : "");
     server.send(200, "application/json", body);
 }

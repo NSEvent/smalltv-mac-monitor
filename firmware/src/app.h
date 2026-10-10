@@ -10,6 +10,7 @@ struct Config {
     uint8_t rot;
     uint8_t bright;
     uint8_t bgr;
+    uint8_t celsius; // 1 = show °C, 0 = °F
 };
 
 struct Reading {

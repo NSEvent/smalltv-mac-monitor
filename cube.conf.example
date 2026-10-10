@@ -17,3 +17,5 @@ HOST=smalltv-mac
 ROTATION=0
 # Optional. 5-100.
 BRIGHTNESS=30
+# Optional. F or C for the temperature readout.
+UNITS=F
