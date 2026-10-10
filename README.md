@@ -6,7 +6,7 @@ Validated on the machine this repo was built on: MacBook Pro, Mac17,6, Apple M5 
 
 ## Where to buy
 
-- GeekMagic SmallTV-Ultra: [AliExpress](https://kevin.md/go/smalltv-ultra) (about $13–25 depending on sales), or a generic-branded [Amazon listing](https://kevin.md/go/smalltv-ultra-amazon) that looks identical (unverified; make sure it says Ultra, since the Pro uses an ESP32 and won't run this firmware).
+- GeekMagic SmallTV-Ultra: [AliExpress](https://kevin.md/go/smalltv-ultra) (around $10–15 on sale), or a generic-branded [Amazon listing](https://kevin.md/go/smalltv-ultra-amazon) that looks identical (unverified; make sure it says Ultra, since the Pro uses an ESP32 and won't run this firmware).
 - Optional: a short male-to-male USB-C adapter ([AliExpress](https://kevin.md/go/usb-c-adapter), [Amazon](https://kevin.md/go/usb-c-adapter-amazon)) lets the cube plug straight into a Mac Studio's front USB-C port with no cable.
 
 These are affiliate links. As an Amazon Associate I earn from qualifying purchases.
