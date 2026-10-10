@@ -1,0 +1,19 @@
+# Copy to cube.conf (gitignored) and fill it in, then run:
+#   python3 scripts/configure-bin.py cube.conf smalltv-mac-firmware.bin
+# Values can contain spaces. Don't quote them.
+
+# Your 2.4 GHz Wi-Fi network (the cube has no 5 GHz radio).
+SSID=My Network
+PASS=my-wifi-password
+
+# The Mac running macmetrics. A reserved IP is more reliable than .local.
+URL=http://192.168.1.50:9123/metrics
+# Optional second address to try if URL stops answering.
+FALLBACK=
+
+# Optional. Cube's network name (letters, digits, dashes).
+HOST=smalltv-mac
+# Optional. 0-3, each step is 90° clockwise.
+ROTATION=0
+# Optional. 5-100.
+BRIGHTNESS=30

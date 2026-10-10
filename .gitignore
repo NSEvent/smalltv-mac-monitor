@@ -1,0 +1,18 @@
+.venv/
+.pio/
+firmware/.pio/
+firmware/.cache/
+backups/*
+!backups/README.md
+.DS_Store
+*.pyc
+macmetrics/macmetrics
+loader_wifi.ini
+firmware/wifi.local
+firmware/src/baked.h
+# Local-only: built/baked images (baked ones contain Wi-Fi credentials),
+# the separate display-lab site checkout, and Python caches.
+*.bin
+display-lab/
+__pycache__/
+cube.conf
