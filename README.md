@@ -4,6 +4,8 @@ A GeekMagic SmallTV-Ultra (240×240) as a Wi-Fi display for one Mac. The Mac run
 
 Validated on the machine this repo was built on: MacBook Pro, Mac17,6, Apple M5 Max, 128 GB. The cube's USB-C cable only supplies power. There is no serial port on the Mac.
 
+The build story, with photos and a step-by-step setup walkthrough: [kevin.md/cube](https://kevin.md/cube).
+
 ## Where to buy
 
 - GeekMagic SmallTV-Ultra: [AliExpress](https://kevin.md/go/smalltv-ultra) (around $10–15 on sale), or a generic-branded [Amazon listing](https://kevin.md/go/smalltv-ultra-amazon) that looks identical (unverified; make sure it says Ultra, since the Pro uses an ESP32 and won't run this firmware).
